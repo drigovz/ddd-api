@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Api.Domain.Interfaces.Services.User;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Application.Controllers
 {
@@ -31,6 +32,20 @@ namespace Api.Application.Controllers
                 return Ok(users);
             }
             catch (ArgumentException ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("{id}", Name = "GetById")]
+        public async Task<ActionResult> GetAsync([BindRequired] Guid id)
+        {
+            try
+            {
+                var user = await _service.GetAsync(id);
+                return Ok(user);
+            }
+            catch (Exception ex)
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
