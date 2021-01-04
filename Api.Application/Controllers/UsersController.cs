@@ -89,5 +89,19 @@ namespace Api.Application.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteAsync([BindRequired]Guid id)
+        {
+            try
+            {
+                var result = await _service.DeleteAsync(id);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            } 
+        }
     }
 }
