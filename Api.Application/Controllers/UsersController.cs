@@ -67,5 +67,27 @@ namespace Api.Application.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutAsync([BindRequired] Guid id, [FromBody] UserEntity user)
+        {
+            try
+            {
+                var obj = await _service.GetAsync(id);
+                if (obj == null)
+                    return BadRequest();
+
+                user.Id = id;
+                var result = await _service.PutAsync(user);
+                if (result != null)
+                    return Ok(result);
+                else
+                    return BadRequest();
+            }
+            catch (ArgumentException ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
     }
 }
