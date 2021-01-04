@@ -41,7 +41,7 @@ namespace Api.Data.Repository
         {
             try
             {
-                var result = await _context.Set<T>().AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(id));
+                var result = await GetById(id);
                 if (result == null)
                     return false;
 
@@ -55,19 +55,35 @@ namespace Api.Data.Repository
             }
         }
 
-        public Task<IEnumerable<T>> GetAsync()
+        public async Task<IEnumerable<T>> GetAsync()
         {
+            try
+            {
+                return await _context.Set<T>().AsNoTracking().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public Task<T> GetById(Guid id)
+        public async Task<T> GetById(Guid id)
         {
+            try
+            {
+                return await _context.Set<T>().AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(id));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<T> UpdateAsync(T entity)
         {
             try
             {
-                var result = await _context.Set<T>().AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(entity.Id));
+                var result = await GetById(entity.Id);
                 if (result == null)
                     return null;
 
