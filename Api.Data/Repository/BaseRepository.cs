@@ -49,8 +49,26 @@ namespace Api.Data.Repository
         {
         }
 
-        public Task<T> UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
+            try
+            {
+                var result = await _context.Set<T>().AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(entity.Id));
+                if (result == null)
+                    return null;
+
+                entity.UpdatedAt = DateTime.UtcNow;
+                entity.CreatedAt = result.CreatedAt;
+
+                _context.Entry(result).CurrentValues.SetValues(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return entity;
         }
     }
 }
