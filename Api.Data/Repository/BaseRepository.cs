@@ -37,24 +37,6 @@ namespace Api.Data.Repository
             return entity;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
-        {
-            try
-            {
-                var result = await GetById(id);
-                if (result == null)
-                    return false;
-
-                _context.Set<T>().Remove(result);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public async Task<IEnumerable<T>> GetAsync()
         {
             try
@@ -72,6 +54,24 @@ namespace Api.Data.Repository
             try
             {
                 return await _context.Set<T>().AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(id));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            try
+            {
+                var result = await GetById(id);
+                if (result == null)
+                    return false;
+
+                _context.Set<T>().Remove(result);
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {
