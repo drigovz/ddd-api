@@ -37,8 +37,22 @@ namespace Api.Data.Repository
             return entity;
         }
 
-        public Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
+            try
+            {
+                var result = await _context.Set<T>().AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(id));
+                if (result == null)
+                    return false;
+
+                _context.Set<T>().Remove(result);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public Task<IEnumerable<T>> GetAsync()
