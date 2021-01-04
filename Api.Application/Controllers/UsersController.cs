@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using Api.Domain.Entities;
 using Api.Domain.Interfaces.Services.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -23,9 +24,6 @@ namespace Api.Application.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAllAsync()
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
             try
             {
                 var users = await _service.GetAllAsync();
@@ -46,6 +44,25 @@ namespace Api.Application.Controllers
                 return Ok(user);
             }
             catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PostAsync([FromBody] UserEntity user)
+        {
+            try
+            {
+                var result = await _service.PostAsync(user);
+                if (result != null)
+                    return Created(new Uri(Url.Link("GetById", new { id = result.Id })), result);
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (ArgumentException ex)
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
