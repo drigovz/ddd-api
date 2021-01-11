@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Api.Domain.Entities;
 using Api.Domain.Interfaces.Services.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -21,6 +22,7 @@ namespace Api.Application.Controllers
             _service = service;
         }
 
+        [Authorize("Bearer")]
         [HttpGet]
         public async Task<ActionResult> GetAllAsync()
         {
@@ -35,6 +37,7 @@ namespace Api.Application.Controllers
             }
         }
 
+        [Authorize("Bearer")]
         [HttpGet("{id}", Name = "GetById")]
         public async Task<ActionResult> GetAsync([BindRequired] Guid id)
         {
@@ -49,6 +52,7 @@ namespace Api.Application.Controllers
             }
         }
 
+        [Authorize("Bearer")]
         [HttpPost]
         public async Task<ActionResult> PostAsync([FromBody] UserEntity user)
         {
@@ -68,6 +72,7 @@ namespace Api.Application.Controllers
             }
         }
 
+        [Authorize("Bearer")]
         [HttpPut("{id}")]
         public async Task<ActionResult> PutAsync([BindRequired] Guid id, [FromBody] UserEntity user)
         {
@@ -90,6 +95,7 @@ namespace Api.Application.Controllers
             }
         }
 
+        [Authorize("Bearer")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAsync([BindRequired]Guid id)
         {
