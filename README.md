@@ -18,4 +18,7 @@ Técnologias empregadas
     EntityFramework Core
     ASP.NET Core WebApi 3.1
     SQL Server
+    Tokens Jwt
+    DTO
+    Automapper
  -->
