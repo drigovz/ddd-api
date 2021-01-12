@@ -1,7 +1,7 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using Api.Domain.Entities;
+using Api.Domain.DTOs.User;
 using Api.Domain.Interfaces.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -54,7 +54,7 @@ namespace Api.Application.Controllers
 
         [Authorize("Bearer")]
         [HttpPost]
-        public async Task<ActionResult> PostAsync([FromBody] UserEntity user)
+        public async Task<ActionResult> PostAsync([FromBody] UserDTO user)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace Api.Application.Controllers
 
         [Authorize("Bearer")]
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutAsync([BindRequired] Guid id, [FromBody] UserEntity user)
+        public async Task<ActionResult> PutAsync([BindRequired] Guid id, [FromBody] UserDTO user)
         {
             try
             {
@@ -82,7 +82,6 @@ namespace Api.Application.Controllers
                 if (obj == null)
                     return BadRequest();
 
-                user.Id = id;
                 var result = await _service.PutAsync(user);
                 if (result != null)
                     return Ok(result);
