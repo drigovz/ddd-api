@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,11 +32,11 @@ namespace Api.Data.Test
                     Name = Faker.Name.FullName()
                 };
 
-                var _registerCreated = await _repository.AddAsync(_entity);
+                var userCreated = await _repository.AddAsync(_entity);
 
-                Assert.NotNull(_registerCreated);
-                Assert.Equal(_entity.Email, _registerCreated.Email);
-                Assert.Equal(_entity.Name, _registerCreated.Name);
+                Assert.NotNull(userCreated);
+                Assert.Equal(_entity.Email, userCreated.Email);
+                Assert.Equal(_entity.Name, userCreated.Name);
             }
         }
 
@@ -71,8 +72,6 @@ namespace Api.Data.Test
             {
                 UserImplementation _repository = new UserImplementation(context);
 
-                var entities = new List<UserEntity>();
-
                 for (int i = 0; i < 5; i++)
                 {
                     UserEntity _entity = new UserEntity
@@ -80,8 +79,7 @@ namespace Api.Data.Test
                         Email = Faker.Internet.Email(),
                         Name = Faker.Name.FullName()
                     };
-
-                    entities.Add(_entity);
+                    
                     await _repository.AddAsync(_entity);
                 }
 
@@ -107,6 +105,7 @@ namespace Api.Data.Test
                 var userCreated = await _repository.AddAsync(_entity);
 
                 var result = await _repository.DeleteAsync(userCreated.Id);
+
                 Assert.True(result);
             }
         }
@@ -126,6 +125,27 @@ namespace Api.Data.Test
 
                 var userCreated = await _repository.AddAsync(_entity);
                 var user = await _repository.GetById(userCreated.Id);
+
+                Assert.NotNull(user);
+                Assert.Equal(_entity.Email, user.Email);
+                Assert.Equal(_entity.Name, user.Name);
+            }
+        }
+
+        [Fact]
+        public async Task Its_Possible_Get_User_By_Email()
+        {
+            using (var context = _serviceProvider.GetService<AppDbContext>())
+            {
+                UserImplementation _repository = new UserImplementation(context);
+                UserEntity _entity = new UserEntity
+                {
+                    Email = Faker.Internet.Email(),
+                    Name = Faker.Name.FullName()
+                };
+                await _repository.AddAsync(_entity);
+
+                var user = await _repository.FindByEmail(_entity.Email);
 
                 Assert.NotNull(user);
                 Assert.Equal(_entity.Email, user.Email);
